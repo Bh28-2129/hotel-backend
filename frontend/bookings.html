@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings - Hotel Management</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="navbar navbar-dark bg-dark sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold" href="index.html">🏨 Hotel Management</a>
+            <div class="d-flex align-items-center ms-auto">
+                <ul class="navbar-nav flex-row align-items-center gap-3">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="rooms.html">Rooms</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="bookings.html">My Bookings</a>
+                    </li>
+                    <!-- Sign In Button (shown when not logged in) -->
+                    <li class="nav-item" id="loginNavItem">
+                        <button class="btn btn-outline-light btn-sm" data-bs-toggle="modal" data-bs-target="#authModal">Sign In</button>
+                    </li>
+                    <!-- User Dropdown (shown when logged in) -->
+                    <li class="nav-item dropdown" id="userNavItem" style="display: none;">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person-circle"></i> <span id="userName">User</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="bookings.html"><i class="bi bi-calendar-check"></i> My Bookings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#" id="logoutLink"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="text-white py-12" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+        <div class="container">
+            <h1 class="display-5 fw-bold">My Bookings</h1>
+            <p class="lead">Manage your hotel reservations</p>
+        </div>
+    </section>
+
+    <!-- Bookings Container -->
+    <section class="py-5">
+        <div class="container">
+            <div id="bookingsContainer">
+                <div class="alert alert-info" role="alert">
+                    <a href="#" class="alert-link" data-bs-toggle="modal" data-bs-target="#authModal">Login</a> to view your bookings.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container text-center">
+            <p class="mb-0">&copy; 2026 Hotel Management System. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Payment Form Modal -->
+    <div class="modal fade" id="paymentModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Process Payment</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="paymentForm">
+                        <input type="hidden" id="paymentBookingId">
+                        
+                        <div class="mb-4">
+                            <label for="paymentMethod" class="form-label">Payment Method</label>
+                            <select class="form-select" id="paymentMethod" required>
+                                <option value="">Select a payment method</option>
+                                <option value="credit_card">Credit Card</option>
+                                <option value="debit_card">Debit Card</option>
+                                <option value="upi_payment">UPI Payment</option>
+                                <option value="cash">Cash</option>
+                            </select>
+                        </div>
+
+                        <!-- Credit/Debit Card Details -->
+                        <div id="cardDetails" style="display: none;">
+                            <div class="mb-3">
+                                <label for="cardNumber" class="form-label">Card Number</label>
+                                <input type="text" class="form-control" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19">
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="cardExpiry" class="form-label">Expiry Date</label>
+                                    <input type="text" class="form-control" id="cardExpiry" placeholder="MM/YY" maxlength="5">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="cardCVV" class="form-label">CVV</label>
+                                    <input type="text" class="form-control" id="cardCVV" placeholder="123" maxlength="3">
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="cardHolderName" class="form-label">Cardholder Name</label>
+                                <input type="text" class="form-control" id="cardHolderName" placeholder="Name on card">
+                            </div>
+                        </div>
+
+                        <!-- UPI Details -->
+                        <div id="upiDetails" style="display: none;">
+                            <div class="mb-3">
+                                <label for="upiId" class="form-label">UPI ID</label>
+                                <input type="text" class="form-control" id="upiId" placeholder="yourname@upi">
+                            </div>
+                        </div>
+
+                        <!-- Cash Payment Message -->
+                        <div id="cashDetails" style="display: none;">
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle"></i> Payment will be collected at the hotel reception upon check-in.
+                            </div>
+                        </div>
+
+                        <div id="paymentAlert"></div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-success w-100 fw-bold">Complete Payment</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Auth Modal -->
+    <div class="modal fade" id="authModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title w-100 text-center">Create Account</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body px-4 pb-4">
+                    <div class="tab-content" id="authTabContent">
+                        <!-- Signup Tab -->
+                        <div class="tab-pane fade show active" id="signupTab" role="tabpanel">
+                            <div class="text-center mb-4">
+                                <h1 class="text-4xl mb-2">🏨</h1>
+                                <h5 class="fw-bold">Create Account</h5>
+                                <p class="text-muted small">Join us today</p>
+                            </div>
+
+                            <form id="registerForm">
+                                <div class="mb-3">
+                                    <label for="signupName" class="form-label">Full Name</label>
+                                    <input type="text" class="form-control" id="signupName" placeholder="Enter your name" required>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="signupEmail" class="form-label">Email Address</label>
+                                    <input type="email" class="form-control" id="signupEmail" placeholder="Enter your email" required>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="signupPhone" class="form-label">Phone Number</label>
+                                    <input type="tel" class="form-control" id="signupPhone" placeholder="Enter your phone">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="signupPassword" class="form-label">Password</label>
+                                    <input type="password" class="form-control" id="signupPassword" placeholder="Enter your password" required>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="signupConfirmPassword" class="form-label">Confirm Password</label>
+                                    <input type="password" class="form-control" id="signupConfirmPassword" placeholder="Confirm your password" required>
+                                </div>
+
+                                <div id="registerAlert"></div>
+
+                                <button type="submit" class="btn btn-primary w-100 fw-bold mb-3">Sign Up</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script type="text/javascript">
+        // Initialize EmailJS with your public key
+        (function(){
+            emailjs.init("DqvvhIhjMWTWM_fuj"); // Replace with your EmailJS public key
+        })();
+    </script>
+    <script src="js/app.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/bookings.js"></script>
+</body>
+</html>
